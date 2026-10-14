@@ -72,3 +72,4 @@ void liberer_inventaire(Joueur* j) {
     }
     j->inventaire = NULL;
 }
+

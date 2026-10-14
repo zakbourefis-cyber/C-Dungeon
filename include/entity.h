@@ -1,6 +1,3 @@
-#ifndef ENTITY_H
-#define ENTITY_H
-
 typedef struct Item {
     char nom[50]; // Nom de l'objet
     int valeur; // Valeur de l'objet
@@ -18,11 +15,6 @@ typedef struct Joueur {
 } Joueur;
 
 void initialiser_joueur(Joueur* j, const char* nom);
-
 void ajouter_inventaire(Joueur* j, const char* nom_item, int valeur);
-
 void afficher_inventaire(const Joueur* j);
-
 void liberer_inventaire(Joueur* j);
-
-#endif  
