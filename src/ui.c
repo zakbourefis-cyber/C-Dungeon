@@ -5,12 +5,33 @@
 #include "../include/ui.h"
 
 
-void afficher_ui(Joueur* j){
-    printf("%s", separation);
-    printf("Hero : %s\n", j->nom);
-    printf("[HP] : %d/%d\n", j->hp,j->max_hp);
-    printf("[MANA] : %d/%d\n", j->mana,j->max_mana);
-    printf("[OR] : %d\n", j->gold);
-    afficher_inventaire(j);
-    printf("%s", separation);
-}
+
+#ifndef DISPLAY_H
+#define DISPLAY_H
+
+#include "entity.h"
+
+/*
+ * Initialise ncurses et prepare les panneaux.
+ * Retourne 0 en cas de succes, -1 en cas d'erreur.
+ */
+int display_init(void);
+
+/* Affiche le heros, l'environnement, le monstre et les commandes. */
+void display_render(
+    const Joueur *joueur,
+    const char *environment_path,
+    const char *monster_name,
+    const char *monster_path,
+    int monster_hp,
+    int monster_max_hp,
+    const char *message
+);
+
+/* Attend une touche et retourne sa version minuscule. */
+int display_get_action(void);
+
+/* Termine ncurses et restaure le terminal. */
+void display_shutdown(void);
+
+#endif

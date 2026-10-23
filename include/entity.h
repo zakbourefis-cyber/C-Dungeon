@@ -1,20 +1,25 @@
+#ifndef ENTITY_H
+#define ENTITY_H
+
 typedef struct Item {
-    char nom[50]; // Nom de l'objet
-    int valeur; // Valeur de l'objet
-    struct Item* next; // Pointeur vers l'objet suivant 
+    char nom[50];
+    int valeur;
+    struct Item* next;
 } Item;
 
 typedef struct Joueur {
-    char nom[50]; // Nom du héros
-    int hp; // Points de vie actuels
-    int max_hp; // Points de vie maximum
-    int mana; // Points de mana actuels
-    int max_mana; // Points de mana maximum
-    int gold; // Quantité d'or possédée
-    Item* inventaire; // Pointeur vers le premier élément de l'inventaire
+    char nom[50];
+    int hp;
+    int max_hp;
+    int mana;
+    int max_mana;
+    int gold;
+    Item* inventaire;
 } Joueur;
 
 void initialiser_joueur(Joueur* j, const char* nom);
 void ajouter_inventaire(Joueur* j, const char* nom_item, int valeur);
 void afficher_inventaire(const Joueur* j);
 void liberer_inventaire(Joueur* j);
+
+#endif
