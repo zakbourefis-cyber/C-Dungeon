@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../include/liste_element.h"
+#include "liste_element.h"
 
 void afficher_resultat(const char *nomTest, int reussi)
 {
