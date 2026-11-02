@@ -52,7 +52,6 @@ build/display.o: src/display.c include/display.h include/entity.h
 
 run:
 	$(MAKE) clean
-	$(MAKE) test
 	$(MAKE) game
 	./$(GAME_PROGRAM)
 

@@ -12,6 +12,7 @@
 typedef struct Element {
     char nom[TAILLE_NOM_ELEMENT];
     char type[TAILLE_TYPE_ELEMENT];
+    int valeur;
     struct Element *suivant;
 } Element;
 
@@ -22,7 +23,7 @@ typedef struct Element {
  * @param nomElement Nom du nouvel élément
  * @param nomType Type du nouvel élément
  */
-void ajouterElement(Element **liste, const char *nomElement, const char *nomType);
+void ajouterElement(Element **liste, const char *nomElement, const char *nomType, int valeur);
 
 /**
  * @brief Ajoute un élément à la fin de la liste.
@@ -31,7 +32,7 @@ void ajouterElement(Element **liste, const char *nomElement, const char *nomType
  * @param nomElement Nom du nouvel élément.
  * @param nomType Type du nouvel élément.
  */
-void ajouterElementTail(Element **liste, const char *nomElement, const char *nomType);
+void ajouterElementFin(Element **liste, const char *nomElement, const char *nomType, int valeur);
 
 /**
  * @brief Supprime le premier élément ayant le nom indiqué.

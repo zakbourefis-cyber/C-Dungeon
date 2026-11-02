@@ -4,13 +4,9 @@
 
 #include "../include/liste_element.h"
 
-void ajouterElement(Element **liste, const char *nomElement, const char *nomType)
+void ajouterElement(Element **liste, const char *nomElement, const char *nomType, int valeur)
 {
     Element *nouvelElement;
-
-    if (liste == NULL || nomElement == NULL || nomType == NULL) {
-        return;
-    }
 
     nouvelElement = malloc(sizeof(*nouvelElement));
     if (nouvelElement == NULL) {
@@ -22,19 +18,16 @@ void ajouterElement(Element **liste, const char *nomElement, const char *nomType
     nouvelElement->nom[TAILLE_NOM_ELEMENT - 1] = '\0';
     strncpy(nouvelElement->type, nomType, TAILLE_TYPE_ELEMENT - 1);
     nouvelElement->type[TAILLE_TYPE_ELEMENT - 1] = '\0';
+    nouvelElement->valeur = valeur;
 
     nouvelElement->suivant = *liste;
     *liste = nouvelElement;
 }
 
-void ajouterElementTail(Element **liste, const char *nomElement, const char *nomType)
+void ajouterElementFin(Element **liste, const char *nomElement, const char *nomType, int valeur)
 {
     Element *nouvelElement;
     Element *dernierElement;
-
-    if (liste == NULL || nomElement == NULL || nomType == NULL) {
-        return;
-    }
 
     nouvelElement = malloc(sizeof(*nouvelElement));
     if (nouvelElement == NULL) {
@@ -96,9 +89,10 @@ void afficherElements(const Element *liste)
     const Element *elementActuel = liste;
 
     while (elementActuel != NULL) {
-        printf("Nom : %s | Type : %s\n",
+        printf("Nom : %s | Type : %s | Valeur : %d\n",
                elementActuel->nom,
                elementActuel->type);
+               elementActuel->valeur;
         elementActuel = elementActuel->suivant;
     }
 }

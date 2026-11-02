@@ -8,8 +8,8 @@ static void verifier_ajout_en_tete(void)
 {
     Element *liste = NULL;
 
-    ajouterElement(&liste, "Potion", "Soin");
-    ajouterElement(&liste, "Gobelin", "Monstre");
+    ajouterElement(&liste, "Potion", "Soin", 20);
+    ajouterElement(&liste, "Gobelin", "Monstre", );
 
     assert(liste != NULL);
     assert(strcmp(liste->nom, "Gobelin") == 0);
@@ -24,8 +24,8 @@ static void verifier_ajout_en_fin(void)
 {
     Element *liste = NULL;
 
-    ajouterElementTail(&liste, "Potion", "Soin");
-    ajouterElementTail(&liste, "Piege", "Environnement");
+    ajouterElementFin(&liste, "Potion", "Soin", 20);
+    ajouterElementFin(&liste, "Piege", "Environnement", 18);
 
     assert(liste != NULL);
     assert(strcmp(liste->nom, "Potion") == 0);
@@ -40,8 +40,8 @@ static void verifier_recherches(void)
 {
     Element *liste = NULL;
 
-    ajouterElementTail(&liste, "Potion", "Soin");
-    ajouterElementTail(&liste, "Gobelin", "Monstre");
+    ajouterElementFin(&liste, "Potion", "Soin");
+    ajouterElementFin(&liste, "Gobelin", "Monstre");
 
     assert(rechercherElementNom(liste, "Gobelin") == liste->suivant);
     assert(rechercherElementNom(liste, "Inconnu") == NULL);
@@ -56,9 +56,9 @@ static void verifier_suppression(void)
 {
     Element *liste = NULL;
 
-    ajouterElementTail(&liste, "Potion", "Soin");
-    ajouterElementTail(&liste, "Gobelin", "Monstre");
-    ajouterElementTail(&liste, "Piege", "Environnement");
+    ajouterElementFin(&liste, "Potion", "Soin");
+    ajouterElementFin(&liste, "Gobelin", "Monstre");
+    ajouterElementFin(&liste, "Piege", "Environnement");
 
     supprimerElement(&liste, "Gobelin");
     assert(liste != NULL);
@@ -80,7 +80,7 @@ static void verifier_tirage_aleatoire(void)
     Element *liste = NULL;
     Element *elementTire;
 
-    ajouterElementTail(&liste, "Potion", "Soin");
+    ajouterElementFin(&liste, "Potion", "Soin");
     elementTire = tirageAleatoireElement(liste);
 
     assert(elementTire == liste);

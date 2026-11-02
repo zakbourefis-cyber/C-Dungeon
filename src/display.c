@@ -211,7 +211,6 @@ static void draw_bar(
         mvwaddnwstr(win, y, x + i,
                     i < filled ? L"█" : L"░", 1);
     }
-
     wattroff(win, COLOR_PAIR(color_pair));
 
     wrefresh(win);
