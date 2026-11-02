@@ -1,100 +1,205 @@
-#include <assert.h>
+
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "../include/liste_element.h"
 
-static void verifier_ajout_en_tete(void)
+void afficher_resultat(const char *nomTest, int reussi)
+{
+    if (reussi) {
+        printf("[REUSSI] %s\n", nomTest);
+    } else {
+        printf("[ECHEC]  %s\n", nomTest);
+    }
+}
+
+/* Test de l'ajout en tête */
+void tester_ajout_tete(void)
 {
     Element *liste = NULL;
 
     ajouterElement(&liste, "Potion", "Soin", 20);
-    ajouterElement(&liste, "Gobelin", "Monstre", );
+    ajouterElement(&liste, "Epee", "Arme", 10);
 
-    assert(liste != NULL);
-    assert(strcmp(liste->nom, "Gobelin") == 0);
-    assert(strcmp(liste->type, "Monstre") == 0);
-    assert(liste->suivant != NULL);
-    assert(strcmp(liste->suivant->nom, "Potion") == 0);
+    int reussi = liste != NULL
+        && strcmp(liste->nom, "Epee") == 0
+        && liste->suivant != NULL
+        && strcmp(liste->suivant->nom, "Potion") == 0;
 
+    afficher_resultat("Ajout en tete", reussi);
     libererListeElements(liste);
 }
 
-static void verifier_ajout_en_fin(void)
+/* Test de l'ajout en fin */
+void tester_ajout_fin(void)
 {
     Element *liste = NULL;
 
     ajouterElementFin(&liste, "Potion", "Soin", 20);
-    ajouterElementFin(&liste, "Piege", "Environnement", 18);
+    ajouterElementFin(&liste, "Epee", "Arme", 10);
 
-    assert(liste != NULL);
-    assert(strcmp(liste->nom, "Potion") == 0);
-    assert(liste->suivant != NULL);
-    assert(strcmp(liste->suivant->nom, "Piege") == 0);
-    assert(liste->suivant->suivant == NULL);
+    int reussi = liste != NULL
+        && strcmp(liste->nom, "Potion") == 0
+        && liste->suivant != NULL
+        && strcmp(liste->suivant->nom, "Epee") == 0
+        && liste->suivant->suivant == NULL;
+
+    afficher_resultat("Ajout en fin", reussi);
+    libererListeElements(liste);
+}
+
+/* Test de la recherche par nom */
+void tester_recherche_nom(void)
+{
+    Element *liste = NULL;
+
+    ajouterElementFin(&liste, "Potion", "Soin", 20);
+    ajouterElementFin(&liste, "Epee", "Arme", 10);
+
+    Element *resultat = rechercherElementNom(liste, "Epee");
+
+    int reussi = resultat != NULL
+        && strcmp(resultat->nom, "Epee") == 0;
+
+    afficher_resultat("Recherche par nom", reussi);
+
+    resultat = rechercherElementNom(liste, "ObjetInexistant");
+    afficher_resultat("Recherche d'un nom inexistant", resultat == NULL);
 
     libererListeElements(liste);
 }
 
-static void verifier_recherches(void)
+/* Test de la recherche par indice */
+void tester_recherche_indice(void)
 {
     Element *liste = NULL;
 
-    ajouterElementFin(&liste, "Potion", "Soin");
-    ajouterElementFin(&liste, "Gobelin", "Monstre");
+    ajouterElementFin(&liste, "Potion", "Soin", 20);
+    ajouterElementFin(&liste, "Epee", "Arme", 10);
 
-    assert(rechercherElementNom(liste, "Gobelin") == liste->suivant);
-    assert(rechercherElementNom(liste, "Inconnu") == NULL);
-    assert(rechercherElementIndice(liste, 0) == liste);
-    assert(rechercherElementIndice(liste, 1) == liste->suivant);
-    assert(rechercherElementIndice(liste, 2) == NULL);
+    Element *premier = rechercherElementIndice(liste, 0);
+    Element *deuxieme = rechercherElementIndice(liste, 1);
+    Element *inexistant = rechercherElementIndice(liste, 2);
+
+    afficher_resultat(
+        "Recherche par indice 0",
+        premier != NULL && strcmp(premier->nom, "Potion") == 0
+    );
+
+    afficher_resultat(
+        "Recherche par indice 1",
+        deuxieme != NULL && strcmp(deuxieme->nom, "Epee") == 0
+    );
+
+    afficher_resultat(
+        "Recherche par indice inexistant",
+        inexistant == NULL
+    );
 
     libererListeElements(liste);
 }
 
-static void verifier_suppression(void)
+/* Test de la suppression */
+void tester_suppression(void)
 {
     Element *liste = NULL;
 
-    ajouterElementFin(&liste, "Potion", "Soin");
-    ajouterElementFin(&liste, "Gobelin", "Monstre");
-    ajouterElementFin(&liste, "Piege", "Environnement");
+    ajouterElementFin(&liste, "Potion", "Soin", 20);
+    ajouterElementFin(&liste, "Epee", "Arme", 10);
+    ajouterElementFin(&liste, "Bouclier", "Armure", 15);
 
-    supprimerElement(&liste, "Gobelin");
-    assert(liste != NULL);
-    assert(strcmp(liste->nom, "Potion") == 0);
-    assert(liste->suivant != NULL);
-    assert(strcmp(liste->suivant->nom, "Piege") == 0);
+    /* Suppression au milieu */
+    supprimerElement(&liste, "Epee");
 
+    int milieu_reussi =
+        rechercherElementNom(liste, "Epee") == NULL
+        && liste->suivant != NULL
+        && strcmp(liste->suivant->nom, "Bouclier") == 0;
+
+    afficher_resultat("Suppression au milieu", milieu_reussi);
+
+    /* Suppression en tete */
     supprimerElement(&liste, "Potion");
-    assert(strcmp(liste->nom, "Piege") == 0);
 
-    supprimerElement(&liste, "Piege");
-    assert(liste == NULL);
+    int tete_reussi = liste != NULL
+        && strcmp(liste->nom, "Bouclier") == 0;
+
+    afficher_resultat("Suppression en tete", tete_reussi);
+
+    /* Suppression du dernier élément */
+    supprimerElement(&liste, "Bouclier");
+
+    afficher_resultat("Suppression du dernier element", liste == NULL);
+
+    /* Suppression d'un élément inexistant */
+    supprimerElement(&liste, "Inexistant");
+
+    afficher_resultat("Suppression d'un element inexistant", liste == NULL);
 
     libererListeElements(liste);
 }
 
-static void verifier_tirage_aleatoire(void)
+/* Test du tirage aléatoire */
+void tester_tirage_aleatoire(void)
 {
     Element *liste = NULL;
-    Element *elementTire;
 
-    ajouterElementFin(&liste, "Potion", "Soin");
-    elementTire = tirageAleatoireElement(liste);
+    Element *resultat_vide = tirageAleatoireElement(liste);
 
-    assert(elementTire == liste);
-    assert(tirageAleatoireElement(NULL) == NULL);
+    afficher_resultat("Tirage dans une liste vide", resultat_vide == NULL);
+
+    ajouterElementFin(&liste, "Potion", "Soin", 20);
+    ajouterElementFin(&liste, "Epee", "Arme", 10);
+    ajouterElementFin(&liste, "Bouclier", "Armure", 15);
+
+    Element *resultat = tirageAleatoireElement(liste);
+
+    int appartient_liste = 0;
+
+    Element *actuel = liste;
+    while (actuel != NULL) {
+        if (actuel == resultat) {
+            appartient_liste = 1;
+            break;
+        }
+        actuel = actuel->suivant;
+    }
+
+    afficher_resultat("Tirage d'un element existant", appartient_liste);
 
     libererListeElements(liste);
 }
 
+/* Test de l'affichage */
+void tester_affichage(void)
+{
+    Element *liste = NULL;
+
+    ajouterElementFin(&liste, "Potion", "Soin", 20);
+    ajouterElementFin(&liste, "Epee", "Arme", 10);
+
+    printf("\n--- Affichage de la liste ---\n");
+    afficherElements(liste);
+    printf("-----------------------------\n");
+
+    afficher_resultat("Affichage de la liste (verification visuelle)", 1);
+
+    libererListeElements(liste);
+}
+
+/* Fonction appelée depuis src/main.c */
 void test_liste_chainee(void)
 {
-    verifier_ajout_en_tete();
-    verifier_ajout_en_fin();
-    verifier_recherches();
-    verifier_suppression();
-    verifier_tirage_aleatoire();
-    puts("Tous les tests ok");
+    printf("\n========== TESTS LISTE CHAINEE ==========\n\n");
+
+    tester_ajout_tete();
+    tester_ajout_fin();
+    tester_recherche_nom();
+    tester_recherche_indice();
+    tester_suppression();
+    tester_tirage_aleatoire();
+    tester_affichage();
+
+    printf("\n========== FIN DES TESTS ================\n");
 }

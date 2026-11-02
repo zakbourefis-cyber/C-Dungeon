@@ -39,6 +39,7 @@ void ajouterElementFin(Element **liste, const char *nomElement, const char *nomT
     nouvelElement->nom[TAILLE_NOM_ELEMENT - 1] = '\0';
     strncpy(nouvelElement->type, nomType, TAILLE_TYPE_ELEMENT - 1);
     nouvelElement->type[TAILLE_TYPE_ELEMENT - 1] = '\0';
+    nouvelElement->valeur = valeur;
     nouvelElement->suivant = NULL;
 
     if (*liste == NULL) {
@@ -89,10 +90,10 @@ void afficherElements(const Element *liste)
     const Element *elementActuel = liste;
 
     while (elementActuel != NULL) {
-        printf("Nom : %s | Type : %s | Valeur : %d\n",
-               elementActuel->nom,
-               elementActuel->type);
-               elementActuel->valeur;
+    printf("Nom : %s | Type : %s | Valeur : %d\n",
+        elementActuel->nom,
+        elementActuel->type,
+        elementActuel->valeur);
         elementActuel = elementActuel->suivant;
     }
 }
