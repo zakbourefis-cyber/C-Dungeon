@@ -1,62 +1,45 @@
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -std=c11 -Iinclude
-AR = ar
-ARFLAGS = rcs
+NCURSES_PREFIX = $(shell brew --prefix ncurses 2>/dev/null)
+ifneq ($(NCURSES_PREFIX),)
+CFLAGS += -I$(NCURSES_PREFIX)/include
+NCURSES_LIBS = -L$(NCURSES_PREFIX)/lib -Wl,-rpath,$(NCURSES_PREFIX)/lib -lncursesw
+else
+NCURSES_LIBS = -lncursesw
+endif
 
 LIB = libListeElement.a
-PROGRAM = test_liste
-GAME_PROGRAM = c-dungeon
-
-LIB_OBJECT = build/liste_element.o
-TEST_OBJECTS = build/main.o build/test_liste_element.o
-GAME_OBJECTS = build/game_main.o build/entity.o build/display.o
+TEST = test_liste
+GAME = c-dungeon
+TEST_SOURCES = src/main.c src/liste_element.c tests/test_liste_element.c
+GAME_SOURCES = src/game_main.c src/entity.c src/display.c
+TEST_OBJECTS = $(patsubst %.c,build/%.o,$(TEST_SOURCES))
+GAME_OBJECTS = $(patsubst %.c,build/%.o,$(GAME_SOURCES))
 
 .PHONY: all test game run clean
 
-all: $(LIB) $(PROGRAM)
+all: $(TEST)
 
-$(LIB): $(LIB_OBJECT)
-	$(AR) $(ARFLAGS) $@ $^
+$(LIB): build/src/liste_element.o
+	$(AR) rcs $@ $^
 
-$(PROGRAM): $(TEST_OBJECTS) $(LIB)
-	$(CC) $(CFLAGS) -o $@ $(TEST_OBJECTS) -L. -lListeElement
+$(TEST): $(TEST_OBJECTS) $(LIB)
+	$(CC) $(CFLAGS) -o $@ $^
 
-build/liste_element.o: src/liste_element.c include/liste_element.h
-	mkdir -p build
+$(GAME): $(GAME_OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $^ $(NCURSES_LIBS)
+
+build/%.o: %.c $(wildcard include/*.h)
+	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-build/main.o: src/main.c
-	mkdir -p build
-	$(CC) $(CFLAGS) -c $< -o $@
+game: $(GAME)
 
-build/test_liste_element.o: tests/test_liste_element.c include/liste_element.h
-	mkdir -p build
-	$(CC) $(CFLAGS) -c $< -o $@
+run: game
+	./$(GAME)
 
-game: $(GAME_PROGRAM)
-
-$(GAME_PROGRAM): $(GAME_OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(GAME_OBJECTS) -lncursesw
-
-build/game_main.o: src/game_main.c include/display.h include/entity.h
-	mkdir -p build
-	$(CC) $(CFLAGS) -c $< -o $@
-
-build/entity.o: src/entity.c include/entity.h
-	mkdir -p build
-	$(CC) $(CFLAGS) -c $< -o $@
-
-build/display.o: src/display.c include/display.h include/entity.h
-	mkdir -p build
-	$(CC) $(CFLAGS) -c $< -o $@
-
-run:
-	$(MAKE) clean
-	$(MAKE) game
-	./$(GAME_PROGRAM)
-
-test: $(PROGRAM)
-	./$(PROGRAM)
+test: $(TEST)
+	./$(TEST)
 
 clean:
-	rm -rf build $(LIB) $(PROGRAM) $(GAME_PROGRAM)
+	rm -rf build $(LIB) $(TEST) $(GAME)
